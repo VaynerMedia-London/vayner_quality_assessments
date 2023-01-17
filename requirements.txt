@@ -1,0 +1,9 @@
+pandas
+regex
+numpy
+datetime
+os
+veetility
+logging
+sys
+config
