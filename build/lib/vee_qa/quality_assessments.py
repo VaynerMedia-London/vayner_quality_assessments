@@ -7,14 +7,8 @@ from tqdm.auto import tqdm
 import os
 import logging
 import sys
-import config as cf
-from veetility import utility_functions
-
 today = pd.to_datetime(date.today())
 
-util = utility_functions.UtilityFunctions(gspread_filepath="./google_sheet_auth.json",db_user=cf.db_user,
-                        db_password=cf.db_password,db_host=cf.db_host,
-                        db_port=cf.db_port, db_name=cf.db_name)
 #%%-----------------------------
 # Initialise Logger
 # ------------------------------
@@ -34,10 +28,12 @@ logger.addHandler(file_handler)
 
 class QualityAssessments:
 
-    def __init__(self,main_error_tracker_name,tracer_error_tracker_name,naming_conv_tracker_name):
+    def __init__(self,main_error_tracker_name,tracer_error_tracker_name,naming_conv_tracker_name,util_object=None):
         self.main_error_tracker_name = main_error_tracker_name
         self.tracer_error_tracker_name = tracer_error_tracker_name
         self.naming_conv_tracker_name = naming_conv_tracker_name
+        if util_object != None:
+            self.util = util_object
     
     def null_values_checker(self,df,cols_to_group,cols_to_ignore,tab_name,
                     null_definitions=[np.nan,'N/A','','None'],output_method='Gsheet'):
@@ -80,7 +76,7 @@ class QualityAssessments:
             null_count_df = pd.merge(null_count_df,col_groupby)
 
         if output_method == 'Gsheet':
-            util.write_to_gsheet(self.main_error_tracker_name,tab_name,null_count_df)
+            self.util.write_to_gsheet(self.main_error_tracker_name,tab_name,null_count_df)
         elif output_method == 'Dataframe': 
             return null_count_df
     
@@ -112,12 +108,12 @@ class QualityAssessments:
                 to a slack function"""
 
         error_message = ''
-        organic_or_paid = util.identify_paid_or_organic(df)
+        organic_or_paid = self.util.identify_paid_or_organic(df)
         print(organic_or_paid)
         buffer_days_since_active = 2
         data_recency = pd.DataFrame(df.groupby(cols_to_group)[date_col].max().apply(lambda x: (today - x).days)).reset_index().rename(columns={'date':'DaysSinceActive'})  
     
-        util.write_to_gsheet(self.main_error_tracker_name,gsheet_tab,data_recency,sheet_prefix=organic_or_paid)
+        self.util.write_to_gsheet(self.main_error_tracker_name,gsheet_tab,data_recency,sheet_prefix=organic_or_paid)
 
         #create a tag string to identify a channel, a concatenation of all the column values specified in 'cols_to_group'
         def concat_cols(x):
@@ -184,7 +180,7 @@ class QualityAssessments:
             error_message = error_message + '  ' + \
                 f'There are {len(misslabelled_og_rows.index.values)} Pure Organic posts with over {impressions_threshold} impressions or video views\n'
             logger.warning(error_message)
-            util.write_to_gsheet(self.main_error_tracker_name,'OrganicWithBigImpressions', misslabelled_og_rows)
+            self.util.write_to_gsheet(self.main_error_tracker_name,'OrganicWithBigImpressions', misslabelled_og_rows)
         # return TT or IG values with empty message field
         # for the date function exlude the dates we paused for the queen
 
@@ -232,12 +228,12 @@ class QualityAssessments:
         if os.path.isdir('Historic df Comparison (Do Not Delete)') == False:
             os.mkdir('Historic df Comparison (Do Not Delete)')
         if os.path.exists(f'Historic df Comparison (Do Not Delete)/{name_of_df}_previous_totals') ==False:
-            util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
+            self.util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
             logger.info(f"Creation of {name_of_df}_previous_totals")
             logger.info(new_dict)
             return
         else:
-            old_dict = util.unpickle_data(f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)')
+            old_dict = self.util.unpickle_data(f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)')
         
         for key, value in old_dict.items():
             if key == 'Columns':
@@ -263,7 +259,7 @@ class QualityAssessments:
             logger.info('ERROR' + error_message) #if error messages has been added to then log it
         if raise_exceptions and error_occured:
             raise Exception(error_message)
-        util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
+        self.util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
         
         return error_message
     
@@ -312,7 +308,7 @@ class QualityAssessments:
                 String detailing what the error is so that it can be passed to a notification 
                 service like slack
                 """
-        paid_or_organic = util.identify_paid_or_organic(df)
+        paid_or_organic = self.util.identify_paid_or_organic(df)
         # https://docs.google.com/spreadsheets/d/1refbPLje6B48qvSRNXrK3U_OAfzjzeuTrzgfqq9O-yw/edit#gid=0
         df['date'] = pd.to_datetime(df['date'])
         error_message = f'{paid_or_organic} Data Quality Check Function Failed'
@@ -340,7 +336,7 @@ class QualityAssessments:
             df.loc[no_impressions_but_engage_rows, 'Error'] = True
             # error_message = error_message + " " + "Split By platform"
             # error_message = error_message + " " + pd.crosstab(erroneous_df['platform'],erroneous_df['media_type'],margins=True,dropna=False)
-            util.write_to_gsheet("Indeed Data Error Tracking Tracer", 'NoImpressionsButEngagements', df.loc[no_impressions_but_engage_rows],
+            self.util.write_to_gsheet("Indeed Data Error Tracking Tracer", 'NoImpressionsButEngagements', df.loc[no_impressions_but_engage_rows],
                             sheet_prefix=paid_or_organic)
             exception_occurred = True
 
@@ -413,5 +409,5 @@ class QualityAssessments:
                     acceptable_values= remove_empties_from_list(naming_convention[label+' Key'].str.upper().unique().tolist())
                     output_df[f'{label} ("{tag}")'] = output_df[level[1]].apply(lambda x: 
                                                                 return_value(x,tag,acceptable_values))
-            util.write_to_gsheet(self.naming_conv_tracker_name, level[2],output_df)
+            self.util.write_to_gsheet(self.naming_conv_tracker_name, level[2],output_df)
     

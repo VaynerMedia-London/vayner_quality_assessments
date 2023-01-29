@@ -1,7 +1,0 @@
-README.md
-setup.py
-vayner_quality_assessments.egg-info/PKG-INFO
-vayner_quality_assessments.egg-info/SOURCES.txt
-vayner_quality_assessments.egg-info/dependency_links.txt
-vayner_quality_assessments.egg-info/requires.txt
-vayner_quality_assessments.egg-info/top_level.txt

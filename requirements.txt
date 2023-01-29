@@ -1,9 +1,6 @@
-pandas
-regex
-numpy
-datetime
-os
-veetility
-logging
-sys
-config
+numpy==1.21.5
+pandas==1.4.2
+regex==2022.3.15
+setuptools==61.2.0
+tqdm==4.64.0
+veetility==0.1.3

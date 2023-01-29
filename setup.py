@@ -14,14 +14,14 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 
 # This call to setup() does all the work
 setup(
-    name="vayner_quality_assessments",
-    version="0.1.0",
+    name="vaynerqualityassessments",
+    version="0.1.6",
     description="Quality assessment functions for Tracer Data",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://medium-multiply.readthedocs.io/",
+    url="",
     author="Will Butler",
-    author_email="butler.will1@gmail.com",
+    author_email="will.butler@vaynermedia.com",
     license="MIT",
     classifiers=[
         "Intended Audience :: Developers",
@@ -36,6 +36,8 @@ setup(
     ],
     packages=["vee_qa"],
     include_package_data=True,
+    # install_requires=["numpy>=1.1","pandas>=1.3","regex","datetime>=4.2",
+    #                     "veetility>=0.1.3"]
     install_requires=["numpy","pandas","regex","datetime",
-                        "os","veetility","logging","sys","config"]
+                        "veetility"]
 )

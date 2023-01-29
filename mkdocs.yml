@@ -1,0 +1,11 @@
+site_name: Vayner Quality Assessments Libary Docs
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings
+
+nav:
+  - Getting Started: getting_started.md
+  - Reference: reference.md
