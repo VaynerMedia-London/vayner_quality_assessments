@@ -337,6 +337,17 @@ util = utility_functions.UtilityFunctions(cf.google_sheet_auth_dict,cf.db_user,
 qual_assess = qa.QualityAssessments(util)
 </code></pre>
 <h2 id="usage-in-code">Usage in code</h2>
+<p>Once a "QualityAssessments" class instance has been created e.g. "qual_assess" this can be used to access
+quality assessment related functions such as checking for data recency.</p>
+<p>There are three typical places where data quality assessment functions would be run</p>
+<ol>
+<li>Pre-processing, when the data is raw from the input source such as from Tracer</li>
+<li>Mid-processing, after a particularly complex function or after merging data, where a check for duplicates may be appropriate.</li>
+<li>Post-processing, at the end of the script just before sending to the end destination</li>
+</ol>
+<p>Most of the functions in this library return an error message, if no error has occured then the error message
+will be a blank string. The error messages can then be concatenated together and passed to a notification function
+like SlackNotifier from the veetility library.</p>
 
 
 
