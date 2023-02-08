@@ -1,4 +1,3 @@
-#%%
 import pandas as pd
 import regex as re
 import numpy as np
@@ -71,7 +70,8 @@ class QualityAssessments:
             return null_count_df
     
     def check_data_recency(self,df,cols_to_group,gsheet_name,tab_name='DataRecency',
-                            three_days_for_monday= True,date_col='date'):
+                            three_days_for_monday= True,date_col='date',
+                            dayfirst='EnterValue',yearfirst='EnterValue',format=None,errors='raise'):
         """Post a google sheet showing how many days since different channels have been active.
         Also return a list of channels that have been inactive for more than 2 days which
         might be indicative of an error
@@ -91,7 +91,11 @@ class QualityAssessments:
         organic_or_paid = self.util.identify_paid_or_organic(df)
         print(organic_or_paid)
         buffer_days_since_active = 2
-        data_recency = pd.DataFrame(df.groupby(cols_to_group)[date_col].max().apply(lambda x: (today - x).days)).reset_index().rename(columns={'date':'DaysSinceActive'})  
+        #remove any timezone information from the date_col and check the date is being read in in correct format
+        df[date_col] = pd.to_datetime(df[date_col].dt.date,dayfirst=dayfirst,
+                                      yearfirst=yearfirst,format=format,errors=errors)
+
+        data_recency = pd.DataFrame(df.groupby(cols_to_group)[date_col].max().apply(lambda x: (today - x).days)).reset_index().rename(columns={date_col:'DaysSinceActive'})  
     
         self.util.write_to_gsheet(gsheet_name,tab_name,data_recency,sheet_prefix=organic_or_paid)
 
