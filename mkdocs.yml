@@ -7,5 +7,6 @@ plugins:
   - mkdocstrings
 
 nav:
-  - Getting Started: getting_started.md
-  - Reference: reference.md
+  - Getting Started: index.md
+  - QAFunctions: QAFunctions.md
+  - Other Vayner Libraries: OtherVaynerLibraries.md

@@ -79,9 +79,14 @@ class QualityAssessments:
         Args:
             df (pandas.DataFrame): Dataframe of data containing a 'date' column
             cols_to_group (list or str): Columns to groupby effectively creating the 'channels'
+            gsheet_name (str): Name of the google sheet to write to
+            tab_name (str): Name of the tab in the Google sheet
             three_days_for_monday (bool): If the check is run on a Monday, give 3 days before declaring a channel as inactive because of the weekend.
             date_col (str): Column name for the date to find the maximum value for based on grouping by `cols_to_group`. If 'created' is used when working with Tracer data, then this will find out when the data was last updated by Tracer, regardless of whether the actual date of the post was 30 days ago.
-            tab_name (str): Name of the tab in the Google sheet
+            dayfirst (bool): If True, parses dates with the day first, eg 10/11/12 is parsed as 2012-11-10. If False, parses dates with the month first, eg 10/11/12 is parsed as 2010-11-12. If None, this is set to True if the day is in the first position in the format string, False otherwise. If dayfirst is set to True, parsing will be faster, but will fail for ambiguous dates, such as 01/02/03.
+            yearfirst (bool): If True parses dates with the year first, eg 10/11/12 is parsed as 2010-11-12. If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil). If False, parses dates with the month first, eg 10/11/12 is parsed as 2012-11-10. If None, this defaults to False. Setting yearfirst to True is not recommended, as it can result in ambiguous dates.
+            format (str): Format to use for strptime. If None, the format is inferred from the first non-NaN element of the column. If the format is inferred, it will be used in subsequent parsing, even if the format changes. To specify a format string that will be used in parsing regardless of the inferred format, use pd.to_datetime with format.
+            errors (str): If 'raise', then invalid parsing will raise an exception. If 'coerce', then invalid parsing will be set as NaT. If 'ignore', then invalid parsing will return the input.
 
         Returns:
             error_message (str): String error message describing which channels are recently inactive. This message can then be sent
