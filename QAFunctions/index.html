@@ -9,15 +9,17 @@
       
       
       
-        <link rel="prev" href="../getting_started/">
+        <link rel="prev" href="..">
       
+      
+        <link rel="next" href="../OtherVaynerLibraries/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
     
     
       
-        <title>Reference - Vayner Quality Assessments Libary Docs</title>
+        <title>QAFunctions - Vayner Quality Assessments Libary Docs</title>
       
     
     
@@ -100,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Reference
+              QAFunctions
             
           </span>
         </div>
@@ -153,7 +155,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting_started/" class="md-nav__link">
+      <a href=".." class="md-nav__link">
         Getting Started
       </a>
     </li>
@@ -178,12 +180,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Reference
+          QAFunctions
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Reference
+        QAFunctions
       </a>
       
         
@@ -261,6 +263,21 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../OtherVaynerLibraries/" class="md-nav__link">
+        Other Vayner Libraries
+      </a>
     </li>
   
 
@@ -376,7 +393,8 @@
 
         <details class="quote">
           <summary>Source code in <code>vee_qa/quality_assessments.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 29</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
+<span class="normal"> 29</span>
 <span class="normal"> 30</span>
 <span class="normal"> 31</span>
 <span class="normal"> 32</span>
@@ -714,7 +732,16 @@
 <span class="normal">364</span>
 <span class="normal">365</span>
 <span class="normal">366</span>
-<span class="normal">367</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">QualityAssessments</span><span class="p">:</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">QualityAssessments</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">util_object</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
@@ -759,7 +786,8 @@
             <span class="k">return</span> <span class="n">null_count_df</span>
 
     <span class="k">def</span> <span class="nf">check_data_recency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">cols_to_group</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;DataRecency&#39;</span><span class="p">,</span>
-                            <span class="n">three_days_for_monday</span><span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">date_col</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">):</span>
+                            <span class="n">three_days_for_monday</span><span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">date_col</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span>
+                            <span class="n">dayfirst</span><span class="o">=</span><span class="s1">&#39;EnterValue&#39;</span><span class="p">,</span><span class="n">yearfirst</span><span class="o">=</span><span class="s1">&#39;EnterValue&#39;</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">errors</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a google sheet showing how many days since different channels have been active.</span>
 <span class="sd">        Also return a list of channels that have been inactive for more than 2 days which</span>
 <span class="sd">        might be indicative of an error</span>
@@ -767,9 +795,14 @@
 <span class="sd">        Args:</span>
 <span class="sd">            df (pandas.DataFrame): Dataframe of data containing a &#39;date&#39; column</span>
 <span class="sd">            cols_to_group (list or str): Columns to groupby effectively creating the &#39;channels&#39;</span>
+<span class="sd">            gsheet_name (str): Name of the google sheet to write to</span>
+<span class="sd">            tab_name (str): Name of the tab in the Google sheet</span>
 <span class="sd">            three_days_for_monday (bool): If the check is run on a Monday, give 3 days before declaring a channel as inactive because of the weekend.</span>
 <span class="sd">            date_col (str): Column name for the date to find the maximum value for based on grouping by `cols_to_group`. If &#39;created&#39; is used when working with Tracer data, then this will find out when the data was last updated by Tracer, regardless of whether the actual date of the post was 30 days ago.</span>
-<span class="sd">            tab_name (str): Name of the tab in the Google sheet</span>
+<span class="sd">            dayfirst (bool): If True, parses dates with the day first, eg 10/11/12 is parsed as 2012-11-10. If False, parses dates with the month first, eg 10/11/12 is parsed as 2010-11-12. If None, this is set to True if the day is in the first position in the format string, False otherwise. If dayfirst is set to True, parsing will be faster, but will fail for ambiguous dates, such as 01/02/03.</span>
+<span class="sd">            yearfirst (bool): If True parses dates with the year first, eg 10/11/12 is parsed as 2010-11-12. If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil). If False, parses dates with the month first, eg 10/11/12 is parsed as 2012-11-10. If None, this defaults to False. Setting yearfirst to True is not recommended, as it can result in ambiguous dates.</span>
+<span class="sd">            format (str): Format to use for strptime. If None, the format is inferred from the first non-NaN element of the column. If the format is inferred, it will be used in subsequent parsing, even if the format changes. To specify a format string that will be used in parsing regardless of the inferred format, use pd.to_datetime with format.</span>
+<span class="sd">            errors (str): If &#39;raise&#39;, then invalid parsing will raise an exception. If &#39;coerce&#39;, then invalid parsing will be set as NaT. If &#39;ignore&#39;, then invalid parsing will return the input.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            error_message (str): String error message describing which channels are recently inactive. This message can then be sent</span>
@@ -779,7 +812,11 @@
         <span class="n">organic_or_paid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">identify_paid_or_organic</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">organic_or_paid</span><span class="p">)</span>
         <span class="n">buffer_days_since_active</span> <span class="o">=</span> <span class="mi">2</span>
-        <span class="n">data_recency</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">cols_to_group</span><span class="p">)[</span><span class="n">date_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">today</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span><span class="s1">&#39;DaysSinceActive&#39;</span><span class="p">})</span>  
+        <span class="c1">#remove any timezone information from the date_col and check the date is being read in in correct format</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">date_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">date_col</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">,</span><span class="n">dayfirst</span><span class="o">=</span><span class="n">dayfirst</span><span class="p">,</span>
+                                      <span class="n">yearfirst</span><span class="o">=</span><span class="n">yearfirst</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span><span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+
+        <span class="n">data_recency</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">cols_to_group</span><span class="p">)[</span><span class="n">date_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">today</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">date_col</span><span class="p">:</span><span class="s1">&#39;DaysSinceActive&#39;</span><span class="p">})</span>  
 
         <span class="bp">self</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">write_to_gsheet</span><span class="p">(</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="p">,</span><span class="n">data_recency</span><span class="p">,</span><span class="n">sheet_prefix</span><span class="o">=</span><span class="n">organic_or_paid</span><span class="p">)</span>
 
@@ -1146,16 +1183,7 @@
 
       <details class="quote">
         <summary>Source code in <code>vee_qa/quality_assessments.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
 <span class="normal">129</span>
 <span class="normal">130</span>
 <span class="normal">131</span>
@@ -1187,7 +1215,16 @@
 <span class="normal">157</span>
 <span class="normal">158</span>
 <span class="normal">159</span>
-<span class="normal">160</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">boosted_function_qa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">paid_df</span><span class="p">,</span> <span class="n">organic_df</span><span class="p">,</span> <span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;OrganicWithBigImpressions&#39;</span><span class="p">,</span><span class="n">impressions_threshold</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">):</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">boosted_function_qa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">paid_df</span><span class="p">,</span> <span class="n">organic_df</span><span class="p">,</span> <span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;OrganicWithBigImpressions&#39;</span><span class="p">,</span><span class="n">impressions_threshold</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Takes in organic data and paid data and reports how many are mislabelled as boosted</span>
 
 <span class="sd">    Args:</span>
@@ -1240,7 +1277,7 @@
 
 
 <h2 id="vee_qa.quality_assessments.QualityAssessments.check_data_recency" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">check_data_recency</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cols_to_group</span><span class="p">,</span> <span class="n">gsheet_name</span><span class="p">,</span> <span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;DataRecency&#39;</span><span class="p">,</span> <span class="n">three_days_for_monday</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">date_col</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">check_data_recency</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cols_to_group</span><span class="p">,</span> <span class="n">gsheet_name</span><span class="p">,</span> <span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;DataRecency&#39;</span><span class="p">,</span> <span class="n">three_days_for_monday</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">date_col</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dayfirst</span><span class="o">=</span><span class="s1">&#39;EnterValue&#39;</span><span class="p">,</span> <span class="n">yearfirst</span><span class="o">=</span><span class="s1">&#39;EnterValue&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1283,6 +1320,26 @@ might be indicative of an error</p>
           </td>
         </tr>
         <tr>
+          <td><code>gsheet_name</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Name of the google sheet to write to</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>tab_name</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Name of the tab in the Google sheet</p></td>
+          <td>
+                <code>&#39;DataRecency&#39;</code>
+          </td>
+        </tr>
+        <tr>
           <td><code>three_days_for_monday</code></td>
           <td>
                 <code>bool</code>
@@ -1303,13 +1360,43 @@ might be indicative of an error</p>
           </td>
         </tr>
         <tr>
-          <td><code>tab_name</code></td>
+          <td><code>dayfirst</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If True, parses dates with the day first, eg 10/11/12 is parsed as 2012-11-10. If False, parses dates with the month first, eg 10/11/12 is parsed as 2010-11-12. If None, this is set to True if the day is in the first position in the format string, False otherwise. If dayfirst is set to True, parsing will be faster, but will fail for ambiguous dates, such as 01/02/03.</p></td>
+          <td>
+                <code>&#39;EnterValue&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>yearfirst</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If True parses dates with the year first, eg 10/11/12 is parsed as 2010-11-12. If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil). If False, parses dates with the month first, eg 10/11/12 is parsed as 2012-11-10. If None, this defaults to False. Setting yearfirst to True is not recommended, as it can result in ambiguous dates.</p></td>
+          <td>
+                <code>&#39;EnterValue&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>format</code></td>
           <td>
                 <code>str</code>
           </td>
-          <td><p>Name of the tab in the Google sheet</p></td>
+          <td><p>Format to use for strptime. If None, the format is inferred from the first non-NaN element of the column. If the format is inferred, it will be used in subsequent parsing, even if the format changes. To specify a format string that will be used in parsing regardless of the inferred format, use pd.to_datetime with format.</p></td>
           <td>
-                <code>&#39;DataRecency&#39;</code>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>errors</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>If 'raise', then invalid parsing will raise an exception. If 'coerce', then invalid parsing will be set as NaT. If 'ignore', then invalid parsing will return the input.</p></td>
+          <td>
+                <code>&#39;raise&#39;</code>
           </td>
         </tr>
     </tbody>
@@ -1336,7 +1423,8 @@ might be indicative of an error</p>
 
       <details class="quote">
         <summary>Source code in <code>vee_qa/quality_assessments.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 73</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 72</span>
+<span class="normal"> 73</span>
 <span class="normal"> 74</span>
 <span class="normal"> 75</span>
 <span class="normal"> 76</span>
@@ -1380,8 +1468,18 @@ might be indicative of an error</p>
 <span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
-<span class="normal">117</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">check_data_recency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">cols_to_group</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;DataRecency&#39;</span><span class="p">,</span>
-                        <span class="n">three_days_for_monday</span><span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">date_col</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">):</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">check_data_recency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">cols_to_group</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;DataRecency&#39;</span><span class="p">,</span>
+                        <span class="n">three_days_for_monday</span><span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">date_col</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span>
+                        <span class="n">dayfirst</span><span class="o">=</span><span class="s1">&#39;EnterValue&#39;</span><span class="p">,</span><span class="n">yearfirst</span><span class="o">=</span><span class="s1">&#39;EnterValue&#39;</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">errors</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Post a google sheet showing how many days since different channels have been active.</span>
 <span class="sd">    Also return a list of channels that have been inactive for more than 2 days which</span>
 <span class="sd">    might be indicative of an error</span>
@@ -1389,9 +1487,14 @@ might be indicative of an error</p>
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataframe of data containing a &#39;date&#39; column</span>
 <span class="sd">        cols_to_group (list or str): Columns to groupby effectively creating the &#39;channels&#39;</span>
+<span class="sd">        gsheet_name (str): Name of the google sheet to write to</span>
+<span class="sd">        tab_name (str): Name of the tab in the Google sheet</span>
 <span class="sd">        three_days_for_monday (bool): If the check is run on a Monday, give 3 days before declaring a channel as inactive because of the weekend.</span>
 <span class="sd">        date_col (str): Column name for the date to find the maximum value for based on grouping by `cols_to_group`. If &#39;created&#39; is used when working with Tracer data, then this will find out when the data was last updated by Tracer, regardless of whether the actual date of the post was 30 days ago.</span>
-<span class="sd">        tab_name (str): Name of the tab in the Google sheet</span>
+<span class="sd">        dayfirst (bool): If True, parses dates with the day first, eg 10/11/12 is parsed as 2012-11-10. If False, parses dates with the month first, eg 10/11/12 is parsed as 2010-11-12. If None, this is set to True if the day is in the first position in the format string, False otherwise. If dayfirst is set to True, parsing will be faster, but will fail for ambiguous dates, such as 01/02/03.</span>
+<span class="sd">        yearfirst (bool): If True parses dates with the year first, eg 10/11/12 is parsed as 2010-11-12. If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil). If False, parses dates with the month first, eg 10/11/12 is parsed as 2012-11-10. If None, this defaults to False. Setting yearfirst to True is not recommended, as it can result in ambiguous dates.</span>
+<span class="sd">        format (str): Format to use for strptime. If None, the format is inferred from the first non-NaN element of the column. If the format is inferred, it will be used in subsequent parsing, even if the format changes. To specify a format string that will be used in parsing regardless of the inferred format, use pd.to_datetime with format.</span>
+<span class="sd">        errors (str): If &#39;raise&#39;, then invalid parsing will raise an exception. If &#39;coerce&#39;, then invalid parsing will be set as NaT. If &#39;ignore&#39;, then invalid parsing will return the input.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        error_message (str): String error message describing which channels are recently inactive. This message can then be sent</span>
@@ -1401,7 +1504,11 @@ might be indicative of an error</p>
     <span class="n">organic_or_paid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">identify_paid_or_organic</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">organic_or_paid</span><span class="p">)</span>
     <span class="n">buffer_days_since_active</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">data_recency</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">cols_to_group</span><span class="p">)[</span><span class="n">date_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">today</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span><span class="s1">&#39;DaysSinceActive&#39;</span><span class="p">})</span>  
+    <span class="c1">#remove any timezone information from the date_col and check the date is being read in in correct format</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">date_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">date_col</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">,</span><span class="n">dayfirst</span><span class="o">=</span><span class="n">dayfirst</span><span class="p">,</span>
+                                  <span class="n">yearfirst</span><span class="o">=</span><span class="n">yearfirst</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span><span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+
+    <span class="n">data_recency</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">cols_to_group</span><span class="p">)[</span><span class="n">date_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">today</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">date_col</span><span class="p">:</span><span class="s1">&#39;DaysSinceActive&#39;</span><span class="p">})</span>  
 
     <span class="bp">self</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">write_to_gsheet</span><span class="p">(</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="p">,</span><span class="n">data_recency</span><span class="p">,</span><span class="n">sheet_prefix</span><span class="o">=</span><span class="n">organic_or_paid</span><span class="p">)</span>
 
@@ -1521,16 +1628,7 @@ platforms count viral engagements differently.</p>
 
       <details class="quote">
         <summary>Source code in <code>vee_qa/quality_assessments.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">257</span>
 <span class="normal">258</span>
 <span class="normal">259</span>
 <span class="normal">260</span>
@@ -1571,7 +1669,16 @@ platforms count viral engagements differently.</p>
 <span class="normal">295</span>
 <span class="normal">296</span>
 <span class="normal">297</span>
-<span class="normal">298</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">check_impressions_no_engagements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;NoImpressionsButEngagements&#39;</span><span class="p">,</span><span class="n">raise_exceptions</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">check_impressions_no_engagements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="o">=</span><span class="s1">&#39;NoImpressionsButEngagements&#39;</span><span class="p">,</span><span class="n">raise_exceptions</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to check if a row item has engagements but no impressions and no video views. </span>
 <span class="sd">    This shouldn&#39;t happen and is indicative of an error with Tracer but can be valid as some </span>
 <span class="sd">    platforms count viral engagements differently.</span>
@@ -1751,16 +1858,7 @@ columns have been added or removed next time, in which case it is deemed an erro
 
       <details class="quote">
         <summary>Source code in <code>vee_qa/quality_assessments.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">171</span>
 <span class="normal">172</span>
 <span class="normal">173</span>
 <span class="normal">174</span>
@@ -1815,7 +1913,16 @@ columns have been added or removed next time, in which case it is deemed an erro
 <span class="normal">223</span>
 <span class="normal">224</span>
 <span class="normal">225</span>
-<span class="normal">226</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">comparison_with_previous_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">name_of_df</span><span class="p">,</span><span class="n">cols_to_check</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;impressions&#39;</span><span class="p">,</span><span class="s1">&#39;likes&#39;</span><span class="p">],</span><span class="n">perc_increase_threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">comparison_with_previous_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">name_of_df</span><span class="p">,</span><span class="n">cols_to_check</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;impressions&#39;</span><span class="p">,</span><span class="s1">&#39;likes&#39;</span><span class="p">],</span><span class="n">perc_increase_threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
                                <span class="n">perc_decrease_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">check_cols_set</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">raise_exceptions</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; This function stores the high level sums for a datatable from the previous run of the script</span>
 <span class="sd">    and if they have reduced or increased too sharply an error is raised.</span>
@@ -1974,16 +2081,7 @@ columns have been added or removed next time, in which case it is deemed an erro
 
       <details class="quote">
         <summary>Source code in <code>vee_qa/quality_assessments.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">237</span>
 <span class="normal">238</span>
 <span class="normal">239</span>
 <span class="normal">240</span>
@@ -1991,7 +2089,16 @@ columns have been added or removed next time, in which case it is deemed an erro
 <span class="normal">242</span>
 <span class="normal">243</span>
 <span class="normal">244</span>
-<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">duplicates_qa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span><span class="n">subset</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">drop_duplicates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">duplicates_qa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span><span class="n">subset</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">drop_duplicates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks for duplicates and optionally drops duplicates in a dataframe.</span>
 
 <span class="sd">    Args:</span>
@@ -2180,16 +2287,7 @@ i.e. 'CampaignNameErrors', 'AdGroupNameErrors', 'AdNameErrors'.</p>
 
       <details class="quote">
         <summary>Source code in <code>vee_qa/quality_assessments.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">309</span>
 <span class="normal">310</span>
 <span class="normal">311</span>
 <span class="normal">312</span>
@@ -2247,7 +2345,16 @@ i.e. 'CampaignNameErrors', 'AdGroupNameErrors', 'AdNameErrors'.</p>
 <span class="normal">364</span>
 <span class="normal">365</span>
 <span class="normal">366</span>
-<span class="normal">367</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">naming_convention_checker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">naming_convention</span><span class="p">,</span><span class="n">campaignname_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">adgroupname_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">naming_convention_checker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">naming_convention</span><span class="p">,</span><span class="n">campaignname_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">adgroupname_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                                 <span class="n">adname_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">campaign_col</span><span class="o">=</span><span class="s1">&#39;campaign_name&#39;</span><span class="p">,</span><span class="n">adgroup_col</span><span class="o">=</span><span class="s1">&#39;group_name&#39;</span><span class="p">,</span><span class="n">adname_col</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span>
                                 <span class="n">start_char</span><span class="o">=</span><span class="s1">&#39;_&#39;</span><span class="p">,</span><span class="n">middle_char</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span><span class="n">end_char</span><span class="o">=</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks for naming convention errors in a given DataFrame and outputs the errors to a Google Sheet.</span>
@@ -2445,7 +2552,8 @@ there are in the rest of the columns.</p>
 
       <details class="quote">
         <summary>Source code in <code>vee_qa/quality_assessments.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
+<span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
@@ -2479,8 +2587,7 @@ there are in the rest of the columns.</p>
 <span class="normal">67</span>
 <span class="normal">68</span>
 <span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">null_values_checker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">cols_to_group</span><span class="p">,</span><span class="n">cols_to_ignore</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="p">,</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">null_values_checker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">cols_to_group</span><span class="p">,</span><span class="n">cols_to_ignore</span><span class="p">,</span><span class="n">gsheet_name</span><span class="p">,</span><span class="n">tab_name</span><span class="p">,</span>
                 <span class="n">null_definitions</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span><span class="s1">&#39;N/A&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;None&#39;</span><span class="p">],</span><span class="n">output_method</span><span class="o">=</span><span class="s1">&#39;gsheet&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Takes in a dataframe and columns to groupby and checks how many null values or null equivalents</span>
 <span class="sd">    there are in the rest of the columns.</span>

@@ -10,6 +10,8 @@
       
       
       
+        <link rel="next" href="QAFunctions/">
+      
       <link rel="icon" href="assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
     
@@ -64,6 +66,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#getting-started" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -93,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Getting Started
             
           </span>
         </div>
@@ -144,10 +151,87 @@
 
   
   
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Getting Started
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        Getting Started
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#library-installation" class="md-nav__link">
+    Library Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialisation-of-the-qualityassessments-class" class="md-nav__link">
+    Initialisation of the QualityAssessments class
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-in-code" class="md-nav__link">
+    Setup in code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-in-code" class="md-nav__link">
+    Usage in code
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
   
     <li class="md-nav__item">
-      <a href="getting_started/" class="md-nav__link">
-        Getting Started
+      <a href="QAFunctions/" class="md-nav__link">
+        QAFunctions
       </a>
     </li>
   
@@ -161,8 +245,8 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/" class="md-nav__link">
-        Reference
+      <a href="OtherVaynerLibraries/" class="md-nav__link">
+        Other Vayner Libraries
       </a>
     </li>
   
@@ -185,6 +269,44 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#library-installation" class="md-nav__link">
+    Library Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialisation-of-the-qualityassessments-class" class="md-nav__link">
+    Initialisation of the QualityAssessments class
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-in-code" class="md-nav__link">
+    Setup in code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-in-code" class="md-nav__link">
+    Usage in code
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -200,7 +322,47 @@
 
 
 
+<h1 id="getting-started">Getting Started</h1>
+<p>A Library built to work on generic pandas Dataframes and provide quality assessments such
+as the number of nulls in certain columns, the recency of data row items or the number
+of duplicates</p>
+<h2 id="library-installation">Library Installation</h2>
+<pre><code>pip install vaynerqualityassessments
+</code></pre>
+<p>To upgrade the library after an update</p>
+<pre><code>pip install vaynerqualityassessments --upgrade
+</code></pre>
+<h2 id="initialisation-of-the-qualityassessments-class">Initialisation of the QualityAssessments class</h2>
+<p>An instance of the "QualityAssessments" class can be initiated with the ability to read/write with 
+google sheets by being passed a UtilityFunctions object from the 
+<a href="https://github.com/VaynerMedia-London/veetility">veetility</a> library.
+Please consult the documentation for that library in order to be able to create an instance of
+the UtilityFunctions class</p>
+<h2 id="setup-in-code">Setup in code</h2>
+<p>Once the instance of the UtilityFunctions class has been created i.e. "util". This can then be passed
+to the QualityAssessments initialisation.</p>
+<pre><code>import config as cf
+from veetility import utility_functions
+from vee_qa import quality_assessments as qa
 
+util = utility_functions.UtilityFunctions(cf.google_sheet_auth_dict,cf.db_user, 
+                                          cf.db_password,cf.db_host,
+                                          cf.db_port, cf.db_name)
+
+qual_assess = qa.QualityAssessments(util)
+</code></pre>
+<h2 id="usage-in-code">Usage in code</h2>
+<p>Once a "QualityAssessments" class instance has been created e.g. "qual_assess" this can be used to access
+quality assessment related functions such as checking for data recency.</p>
+<p>There are three typical places where data quality assessment functions would be run</p>
+<ol>
+<li>Pre-processing, when the data is raw from the input source such as from Tracer</li>
+<li>Mid-processing, after a particularly complex function or after merging data, where a check for duplicates may be appropriate.</li>
+<li>Post-processing, at the end of the script just before sending to the end destination</li>
+</ol>
+<p>Most of the functions in this library return an error message, if no error has occured then the error message
+will be a blank string. The error messages can then be concatenated together and passed to a notification function
+like SlackNotifier from the veetility library.</p>
 
 
 
