@@ -1,7 +1,8 @@
+#%%
 import pandas as pd
 import regex as re
 import numpy as np
-from datetime import date
+from datetime import date,datetime
 from tqdm.auto import tqdm
 import os
 import logging
@@ -190,21 +191,25 @@ class QualityAssessments:
         
         error_message, error_occured = '', False
         new_dict = {}
+        new_dict['datetime'] = str(datetime.now())
         for col in cols_to_check:
-            new_dict[col] = df[col].sum()
+            new_dict[col] = int(df[col].sum())
 
         if check_cols_set == True:
             new_dict['Columns'] = df.columns.tolist()
 
         if os.path.isdir('Historic df Comparison (Do Not Delete)') == False:
             os.mkdir('Historic df Comparison (Do Not Delete)')
-        if os.path.exists(f'Historic df Comparison (Do Not Delete)/{name_of_df}_previous_totals') ==False:
-            self.util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
+        if os.path.exists(f'Historic df Comparison (Do Not Delete)/{name_of_df}_previous_totals.json') ==False:
+            self.util.write_json(new_dict,f'{name_of_df}_previous_totals',file_type='append',folder='Historic df Comparison (Do Not Delete)/')
             logger.info(f"Creation of {name_of_df}_previous_totals")
             logger.info(new_dict)
             return
         else:
-            old_dict = self.util.unpickle_data(f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)')
+            #old_dict = self.util.unpickle_data(f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)')
+            old_dict_file = self.util.read_json(f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)',
+                                                    file_type='append')
+            old_dict = old_dict_file[-1] #Grab the lastest entry in the json file, descending date order
         
         for key, value in old_dict.items():
             if key == 'Columns':
@@ -215,6 +220,8 @@ class QualityAssessments:
                     error_message = error_message + '  ' + f'The columns seems to have changed from last time,\n'\
                                             f' Columns that were added = {columns_added}\n' \
                                             f' Columns that were removed = {columns_removed}\n'
+            elif key == 'datetime':
+                continue
             elif new_dict[key] *(1+perc_decrease_threshold/100) < value:
                 error_occured = True
                 error_message = error_message + '  ' + f'The total of {key} seems to have decreased from last time\n'\
@@ -230,7 +237,9 @@ class QualityAssessments:
             logger.info('ERROR' + error_message) #if error messages has been added to then log it
         if raise_exceptions and error_occured:
             raise Exception(error_message)
-        self.util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
+        #self.util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
+        self.util.write_json(new_dict,f'{name_of_df}_previous_totals',file_type='append',
+                             folder='Historic df Comparison (Do Not Delete)/')
         
         return error_message
     
@@ -248,7 +257,7 @@ class QualityAssessments:
 
         num_duplicates = df.duplicated(subset=subset).sum()
         if num_duplicates >= 0:
-            logger.warning(f'{num_duplicates} duplicates found in the {df_name}')
+            logger.warning(f'{num_duplicates} duplicates found in the {df_name}. Subset = {subset}')
             if drop_duplicates:
                 df.drop_duplicates(subset=subset, inplace=True)
         return df
@@ -373,5 +382,7 @@ class QualityAssessments:
                 if label in key_values_conv_cols:
                     acceptable_values= remove_empties_from_list(naming_convention[label+' Key'].str.upper().unique().tolist())
                     output_df[f'{label} ("{tag}")'] = output_df[level[1]].apply(lambda x: return_value(x,tag,acceptable_values))
-            self.util.write_to_gsheet(gsheet_name, level[2],output_df)
+            self.util.write_to_gsheet(workbook_name = gsheet_name,sheet_name= level[2],df = output_df)
     
+
+# %%

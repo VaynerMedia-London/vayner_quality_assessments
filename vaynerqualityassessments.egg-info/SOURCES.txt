@@ -6,4 +6,5 @@ vaynerqualityassessments.egg-info/dependency_links.txt
 vaynerqualityassessments.egg-info/requires.txt
 vaynerqualityassessments.egg-info/top_level.txt
 vee_qa/__init__.py
+vee_qa/matched_qa.py
 vee_qa/quality_assessments.py

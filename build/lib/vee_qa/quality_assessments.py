@@ -1,7 +1,8 @@
+#%%
 import pandas as pd
 import regex as re
 import numpy as np
-from datetime import date
+from datetime import date,datetime
 from tqdm.auto import tqdm
 import os
 import logging
@@ -79,9 +80,14 @@ class QualityAssessments:
         Args:
             df (pandas.DataFrame): Dataframe of data containing a 'date' column
             cols_to_group (list or str): Columns to groupby effectively creating the 'channels'
+            gsheet_name (str): Name of the google sheet to write to
+            tab_name (str): Name of the tab in the Google sheet
             three_days_for_monday (bool): If the check is run on a Monday, give 3 days before declaring a channel as inactive because of the weekend.
             date_col (str): Column name for the date to find the maximum value for based on grouping by `cols_to_group`. If 'created' is used when working with Tracer data, then this will find out when the data was last updated by Tracer, regardless of whether the actual date of the post was 30 days ago.
-            tab_name (str): Name of the tab in the Google sheet
+            dayfirst (bool): If True, parses dates with the day first, eg 10/11/12 is parsed as 2012-11-10. If False, parses dates with the month first, eg 10/11/12 is parsed as 2010-11-12. If None, this is set to True if the day is in the first position in the format string, False otherwise. If dayfirst is set to True, parsing will be faster, but will fail for ambiguous dates, such as 01/02/03.
+            yearfirst (bool): If True parses dates with the year first, eg 10/11/12 is parsed as 2010-11-12. If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil). If False, parses dates with the month first, eg 10/11/12 is parsed as 2012-11-10. If None, this defaults to False. Setting yearfirst to True is not recommended, as it can result in ambiguous dates.
+            format (str): Format to use for strptime. If None, the format is inferred from the first non-NaN element of the column. If the format is inferred, it will be used in subsequent parsing, even if the format changes. To specify a format string that will be used in parsing regardless of the inferred format, use pd.to_datetime with format.
+            errors (str): If 'raise', then invalid parsing will raise an exception. If 'coerce', then invalid parsing will be set as NaT. If 'ignore', then invalid parsing will return the input.
 
         Returns:
             error_message (str): String error message describing which channels are recently inactive. This message can then be sent
@@ -91,7 +97,7 @@ class QualityAssessments:
         organic_or_paid = self.util.identify_paid_or_organic(df)
         print(organic_or_paid)
         buffer_days_since_active = 2
-        #remove any timezone information from the date_col
+        #remove any timezone information from the date_col and check the date is being read in in correct format
         df[date_col] = pd.to_datetime(df[date_col].dt.date,dayfirst=dayfirst,
                                       yearfirst=yearfirst,format=format,errors=errors)
 
@@ -185,21 +191,25 @@ class QualityAssessments:
         
         error_message, error_occured = '', False
         new_dict = {}
+        new_dict['datetime'] = str(datetime.now())
         for col in cols_to_check:
-            new_dict[col] = df[col].sum()
+            new_dict[col] = int(df[col].sum())
 
         if check_cols_set == True:
             new_dict['Columns'] = df.columns.tolist()
 
         if os.path.isdir('Historic df Comparison (Do Not Delete)') == False:
             os.mkdir('Historic df Comparison (Do Not Delete)')
-        if os.path.exists(f'Historic df Comparison (Do Not Delete)/{name_of_df}_previous_totals') ==False:
-            self.util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
+        if os.path.exists(f'Historic df Comparison (Do Not Delete)/{name_of_df}_previous_totals.json') ==False:
+            self.util.write_json(new_dict,f'{name_of_df}_previous_totals',file_type='append',folder='Historic df Comparison (Do Not Delete)/')
             logger.info(f"Creation of {name_of_df}_previous_totals")
             logger.info(new_dict)
             return
         else:
-            old_dict = self.util.unpickle_data(f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)')
+            #old_dict = self.util.unpickle_data(f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)')
+            old_dict_file = self.util.read_json(f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)',
+                                                    file_type='append')
+            old_dict = old_dict_file[-1] #Grab the lastest entry in the json file, descending date order
         
         for key, value in old_dict.items():
             if key == 'Columns':
@@ -210,6 +220,8 @@ class QualityAssessments:
                     error_message = error_message + '  ' + f'The columns seems to have changed from last time,\n'\
                                             f' Columns that were added = {columns_added}\n' \
                                             f' Columns that were removed = {columns_removed}\n'
+            elif key == 'datetime':
+                continue
             elif new_dict[key] *(1+perc_decrease_threshold/100) < value:
                 error_occured = True
                 error_message = error_message + '  ' + f'The total of {key} seems to have decreased from last time\n'\
@@ -225,7 +237,9 @@ class QualityAssessments:
             logger.info('ERROR' + error_message) #if error messages has been added to then log it
         if raise_exceptions and error_occured:
             raise Exception(error_message)
-        self.util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
+        #self.util.pickle_data(new_dict,f'{name_of_df}_previous_totals',folder='Historic df Comparison (Do Not Delete)/')
+        self.util.write_json(new_dict,f'{name_of_df}_previous_totals',file_type='append',
+                             folder='Historic df Comparison (Do Not Delete)/')
         
         return error_message
     
@@ -368,5 +382,7 @@ class QualityAssessments:
                 if label in key_values_conv_cols:
                     acceptable_values= remove_empties_from_list(naming_convention[label+' Key'].str.upper().unique().tolist())
                     output_df[f'{label} ("{tag}")'] = output_df[level[1]].apply(lambda x: return_value(x,tag,acceptable_values))
-            self.util.write_to_gsheet(gsheet_name, level[2],output_df)
+            self.util.write_to_gsheet(workbook_name = gsheet_name,sheet_name= level[2],df = output_df)
     
+
+# %%
